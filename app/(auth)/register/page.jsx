@@ -22,30 +22,37 @@ export default function RegisterPage() {
 
   const [form, setForm] = useState({
     name: "",
-    username: "",
     email: "",
     password: "",
     password_confirmation: "",
+    phone: "",
+    referred_by: "",
   })
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    })
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
     setError("")
     setLoading(true)
 
     try {
       await api.post("/api/register", form)
+
       router.push("/login")
     } catch (err) {
       setError(
-        err?.response?.data?.message || "Registration failed"
+        err?.response?.data?.message ||
+          "Registration failed"
       )
     } finally {
       setLoading(false)
@@ -56,6 +63,7 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
 
       <Card className="w-full max-w-md">
+
         <CardHeader className="text-center space-y-4">
 
           <div className="flex justify-center">
@@ -74,6 +82,7 @@ export default function RegisterPage() {
             <CardTitle className="text-2xl">
               Create your account
             </CardTitle>
+
             <CardDescription>
               Start using Messegy today
             </CardDescription>
@@ -82,19 +91,13 @@ export default function RegisterPage() {
         </CardHeader>
 
         <CardContent>
+
           <form onSubmit={handleSubmit} className="space-y-4">
 
             <Input
               name="name"
               placeholder="Full Name"
-              onChange={handleChange}
-              required
-              disabled={loading}
-            />
-
-            <Input
-              name="username"
-              placeholder="Username"
+              value={form.name}
               onChange={handleChange}
               required
               disabled={loading}
@@ -104,6 +107,7 @@ export default function RegisterPage() {
               name="email"
               type="email"
               placeholder="Email"
+              value={form.email}
               onChange={handleChange}
               required
               disabled={loading}
@@ -113,6 +117,7 @@ export default function RegisterPage() {
               name="password"
               type="password"
               placeholder="Password"
+              value={form.password}
               onChange={handleChange}
               required
               disabled={loading}
@@ -122,13 +127,30 @@ export default function RegisterPage() {
               name="password_confirmation"
               type="password"
               placeholder="Confirm Password"
+              value={form.password_confirmation}
               onChange={handleChange}
               required
               disabled={loading}
             />
 
+            <Input
+              name="phone"
+              placeholder="Phone (optional)"
+              value={form.phone}
+              onChange={handleChange}
+              disabled={loading}
+            />
+
+            <Input
+              name="referred_by"
+              placeholder="Referral Username (optional)"
+              value={form.referred_by}
+              onChange={handleChange}
+              disabled={loading}
+            />
+
             {error && (
-              <p className="text-sm text-destructive text-center">
+              <p className="text-sm text-red-500 text-center">
                 {error}
               </p>
             )}
@@ -141,21 +163,29 @@ export default function RegisterPage() {
               {loading && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              {loading ? "Creating account..." : "Register"}
+
+              {loading
+                ? "Creating account..."
+                : "Register"}
             </Button>
 
             <div className="text-center text-sm text-muted-foreground">
+
               Already have an account?{" "}
+
               <Link
                 href="/login"
                 className="underline underline-offset-4"
               >
                 Sign in
               </Link>
+
             </div>
 
           </form>
+
         </CardContent>
+
       </Card>
 
     </div>

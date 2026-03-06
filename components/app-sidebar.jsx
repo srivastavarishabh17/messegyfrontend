@@ -16,6 +16,7 @@ import {
   CreditCard,
   Settings,
   LogOut,
+  Bot
 } from "lucide-react"
 
 import { api } from "@/lib/api"
@@ -189,6 +190,17 @@ export function AppSidebar(props) {
                 <span>Templates</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
+            <SidebarMenuItem>
+  <SidebarMenuButton
+    isActive={isActive("auto-replies")}
+    onClick={() =>
+      router.push(makeHref("auto-replies"))
+    }
+  >
+    <Bot className="h-4 w-4" />
+    <span>Auto Replies</span>
+  </SidebarMenuButton>
+</SidebarMenuItem>
 
             {/* <SidebarMenuItem>
               <SidebarMenuButton
