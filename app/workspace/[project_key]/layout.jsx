@@ -127,7 +127,7 @@ export default function WorkspaceLayout({ children }) {
           <footer className="h-14 flex items-center justify-between px-6 text-sm text-muted-foreground bg-white">
 
             <span>
-              © {new Date().getFullYear()} Messegy INDIA v2.2
+              © {new Date().getFullYear()} Messegy INDIA v2.3
             </span>
 
             <div className="flex gap-4">
