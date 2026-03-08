@@ -6,15 +6,16 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { api } from "@/lib/api"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 
 export default function WorkspaceLayout({ children }) {
 
   const router = useRouter()
+  const { project_key } = useParams()
 
-  const [plan,setPlan] = useState("Freemium")
+  const [plan,setPlan] = useState("freemium")
   const [expires,setExpires] = useState(null)
+  const [loading,setLoading] = useState(true)
 
   /* ---------------- FETCH PLAN ---------------- */
 
@@ -25,12 +26,14 @@ export default function WorkspaceLayout({ children }) {
       const res = await api.get("/api/billing/my-plan")
 
       if(res.data?.plan){
-        setPlan(res.data.plan)
+        setPlan(res.data.plan.toLowerCase())
         setExpires(res.data.expires)
       }
 
     }catch(err){
       console.log("plan fetch failed")
+    }finally{
+      setLoading(false)
     }
 
   }
@@ -39,15 +42,20 @@ export default function WorkspaceLayout({ children }) {
     fetchPlan()
   },[])
 
+  if(loading){
+    return null
+  }
+
   return (
+
     <SidebarProvider>
 
       <div className="flex min-h-screen w-full bg-[#efeae2]">
-        
-        {/* Sidebar */}
-        <AppSidebar />
 
-        {/* Main Area */}
+        {/* Sidebar */}
+        <AppSidebar plan={plan} />
+
+        {/* Main */}
         <SidebarInset className="flex flex-col bg-background">
 
           {/* Header */}
@@ -57,11 +65,13 @@ export default function WorkspaceLayout({ children }) {
             {/* Left */}
 
             <div className="flex items-center gap-4">
+
               <SidebarTrigger />
 
               <h1 className="text-lg font-semibold">
                 Messegy
               </h1>
+
             </div>
 
             {/* Right */}
@@ -76,7 +86,7 @@ export default function WorkspaceLayout({ children }) {
                   Plan
                 </span>
 
-                <span className="px-3 py-1 rounded-md bg-green-600 text-white text-xs font-semibold">
+                <span className="px-3 py-1 rounded-md bg-green-600 text-white text-xs font-semibold uppercase">
                   {plan}
                 </span>
 
@@ -90,12 +100,12 @@ export default function WorkspaceLayout({ children }) {
                 </span>
               )}
 
-              {/* UPGRADE BUTTON */}
+              {/* UPGRADE */}
 
               <Button
                 variant="outline"
                 size="sm"
-                onClick={()=>router.push("./plans")}
+                onClick={()=>router.push(`/workspace/${project_key}/plans`)}
               >
                 Upgrade
               </Button>
@@ -104,7 +114,7 @@ export default function WorkspaceLayout({ children }) {
 
           </header>
 
-          {/* Page Content */}
+          {/* CONTENT */}
 
           <main className="flex-1 p-8">
             {children}
@@ -112,12 +122,12 @@ export default function WorkspaceLayout({ children }) {
 
           <Separator />
 
-          {/* Footer */}
+          {/* FOOTER */}
 
           <footer className="h-14 flex items-center justify-between px-6 text-sm text-muted-foreground bg-white">
 
             <span>
-              © {new Date().getFullYear()} Messegy INDIA v2.1
+              © {new Date().getFullYear()} Messegy INDIA v2.2
             </span>
 
             <div className="flex gap-4">
@@ -143,5 +153,7 @@ export default function WorkspaceLayout({ children }) {
       </div>
 
     </SidebarProvider>
+
   )
+
 }

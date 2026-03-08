@@ -5,6 +5,7 @@ import { useParams } from "next/navigation"
 import { api } from "@/lib/api"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
+import Script from "next/script"
 
 export default function PlansPage() {
 
@@ -168,35 +169,66 @@ export default function PlansPage() {
 
         ))}
 
-        {enterprise && (
+      {enterprise && (
 
-          <div className="border rounded-xl p-6 bg-white">
+  <div className="border rounded-xl p-8 bg-white w-full md:col-span-3">
 
-            <h2 className="text-xl font-semibold mb-2">
-              Enterprise
-            </h2>
+    <div className="grid md:grid-cols-2 gap-8 items-start">
 
-            <p className="text-lg mb-4">
-              Custom Pricing
-            </p>
+      {/* LEFT SIDE */}
+      <div>
 
-            <p className="text-sm mb-6">
-              Contact our team for enterprise solutions.
-            </p>
+        <h2 className="text-2xl font-semibold mb-2">
+          {enterprise.name}
+        </h2>
 
-            <button
-              className="w-full bg-black text-white py-2 rounded-md"
-              onClick={()=> window.location.href="mailto:sales@messegy.com"}
-            >
-              Contact Sales
-            </button>
+        <p className="text-4xl font-bold mb-6">
+          Custom Pricing
+        </p>
 
-          </div>
+        <p className="text-sm text-muted-foreground mb-6">
+          Built for high-scale teams needing unlimited access, integrations,
+          and dedicated support.
+        </p>
 
-        )}
+        <button
+          className="bg-black text-white px-6 py-3 rounded-md"
+          onClick={()=> window.location.href="mailto:sales@messegy.com"}
+        >
+          Contact Sales
+        </button>
 
       </div>
 
+
+      {/* RIGHT SIDE FEATURES */}
+
+      <div>
+
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-3 text-sm">
+
+          {(enterprise.features || []).map((f,i)=>(
+            <li key={i} className="flex items-center gap-2">
+              <span className="text-green-600">✓</span>
+              {f}
+            </li>
+          ))}
+
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+
+)}
+
+      </div>
+<Script
+  src="https://checkout.razorpay.com/v1/checkout.js"
+  strategy="afterInteractive"
+/>
     </div>
   )
 }

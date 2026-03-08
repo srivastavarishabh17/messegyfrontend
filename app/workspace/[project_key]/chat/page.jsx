@@ -17,7 +17,8 @@ export default function ChatPage() {
   const bottomRef = useRef()
 
   /* ---------------- FETCH CONVERSATIONS ---------------- */
-
+const soundRef = useRef(null)
+const lastMessageIdRef = useRef(null)
   const fetchConversations = async () => {
   try {
     const res = await api.get("/api/conversations")
@@ -31,11 +32,31 @@ export default function ChatPage() {
 
 const fetchMessages = async (conversationId) => {
   try {
-    const res = await api.get(
-      `/api/conversations/${conversationId}`
-    )
 
-    setMessages(res.data?.messages?.data || [])
+    const res = await api.get(`/api/conversations/${conversationId}`)
+
+    const newMessages = res.data?.messages?.data || []
+
+    if (newMessages.length) {
+
+      const latestId = newMessages[newMessages.length - 1].id
+
+      if (
+        lastMessageIdRef.current &&
+        latestId !== lastMessageIdRef.current
+      ) {
+       if (
+  lastMessageIdRef.current &&
+  latestId !== lastMessageIdRef.current
+) {
+  soundRef.current?.play().catch(()=>{})
+}
+      }
+
+      lastMessageIdRef.current = latestId
+    }
+
+    setMessages(newMessages)
 
   } catch (e) {
     console.error(e)
@@ -118,7 +139,7 @@ useEffect(() => {
     )
 
   return (
-    <div className="h-[calc(100vh-100px)] flex rounded-xl border bg-white overflow-hidden shadow-sm p-0">
+    <div className="-m-8 h-[calc(100vh-100px)] flex border bg-white overflow-hidden shadow-sm">
 
       {/* LEFT PANEL */}
       <div className="w-80 border-r hidden md:flex flex-col">
@@ -344,6 +365,9 @@ useEffect(() => {
 
   </div>
 )}
+<audio ref={soundRef} preload="auto">
+  <source src="/sounds/3.mp3" type="audio/mpeg" />
+</audio>
     </div>
   )
 }
